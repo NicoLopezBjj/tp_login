@@ -46,7 +46,27 @@ app.get('/home', (req,res)=>{
 })
 
 app.post('/send',(req,res)=>{
+    
+    let usuario = req.body.email
+    let full_name = req.body.fullname
+    let password = req.body.password
 
+    if (usuario && full_name && password){
+        conection.query('INSERT INTO username (emailOrPhone,fullName,password) VALUES (?,?,?)',[usuario,full_name,password],(error,resultado,fields)=>{
+            if (error) throw error;
+            if (resultado.length>0){
+                console.log('usuario se registro')
+                req.session.loggedin=true
+                req.session.username=usuario
+            }else{
+                console.log('el usuario no se registro')
+            }
+            res.redirect('/home')
+        })
+    }else {
+        res.redirect ('home')
+        res.end()
+    }
 })
 
 app.listen(4000, ()=>{
