@@ -5,9 +5,15 @@ const path= require ('path')
 
 const app = express ()
 
+// para recibir datos json en los registro
+app.use(express.json()) 
+// para recibir datos del formulario
+app.use(express.urlencoded({extended:false}))
+
+app.use(express.static(path.join(__dirname,'public')))
 
 app.get('/home', (req,res)=>{
-    res.send('<h1>Hola mundo</h1>')
+    res.sendFile(path.join(__dirname,'/public/index.html'))
 })
 
 app.listen(4000, ()=>{
