@@ -52,6 +52,12 @@ app.post('/send',(req,res)=>{
     let full_name = req.body.fullname
     let password = req.body.password
 
+    if (!usuario || !full_name || !password){
+        return res.status(400).send('Todos los campos son obligatorios')
+    }
+
+    
+
     if (usuario && full_name && password){
         conection.query('INSERT INTO usuarios (email_phone,full_name,password) VALUES (?,?,?)',[usuario,full_name,password],(error,resultado,fields)=>{
             if (error) throw error;
