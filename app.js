@@ -12,7 +12,7 @@ const app = express ()
 // para recibir datos json en los registro
 app.use(express.json()) 
 // para recibir datos del formulario
-app.use(express.urlencoded({extended:false}))
+app.use(bodyParser.urlencoded({extended:false}))
 
 app.use(express.static(path.join(__dirname,'public')))
 
