@@ -53,9 +53,9 @@ app.post('/send',(req,res)=>{
     let password = req.body.password
 
     if (usuario && full_name && password){
-        conection.query('INSERT INTO username (emailOrPhone,fullName,password) VALUES (?,?,?)',[usuario,full_name,password],(error,resultado,fields)=>{
+        conection.query('INSERT INTO usuarios (email_phone,full_name,password) VALUES (?,?,?)',[usuario,full_name,password],(error,resultado,fields)=>{
             if (error) throw error;
-            if (resultado.length>0){
+            if (resultado.affectedRows>0){
                 console.log('usuario se registro')
                 req.session.loggedin=true
                 req.session.username=usuario
