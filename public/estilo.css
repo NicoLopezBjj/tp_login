@@ -1,3 +1,11 @@
 .fondoGris{
     background-color: rgb(196, 190, 190);
 }
+
+.textG{
+    color: gray !important
+}
+
+.altura{
+    height: 100vh;
+}
