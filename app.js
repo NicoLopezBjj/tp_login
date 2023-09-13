@@ -52,12 +52,13 @@ app.post('/send',(req,res)=>{
     let full_name = req.body.fullname
     let password = req.body.password
 
+    // Verificar que todos los campos estan presentes
     if (!usuario || !full_name || !password){
         return res.status(400).send('Todos los campos son obligatorios')
     }
 
-    
 
+    // Ingresar un nuevo usuario
     if (usuario && full_name && password){
         conection.query('INSERT INTO usuarios (email_phone,full_name,password) VALUES (?,?,?)',[usuario,full_name,password],(error,resultado,fields)=>{
             if (error) throw error;
@@ -65,6 +66,7 @@ app.post('/send',(req,res)=>{
                 console.log('usuario se registro')
                 req.session.loggedin=true
                 req.session.username=usuario
+                res.sendFile(path.join(__dirname,'/public/send.html'))
             }else{
                 console.log('el usuario no se registro')
             }
