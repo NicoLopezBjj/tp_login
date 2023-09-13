@@ -14,6 +14,7 @@ app.use(express.json())
 // para recibir datos del formulario
 app.use(bodyParser.urlencoded({extended:false}))
 
+// files static
 app.use(express.static(path.join(__dirname,'public')))
 
 // para configurar DataBase
@@ -46,6 +47,10 @@ app.get('/home', (req,res)=>{
     res.sendFile(path.join(__dirname,'/public/index.html'))
 })
 
+app.get('/send', (req,res) =>{{
+    res.sendFile(path.join(__dirname, '/public/send.html'))
+}})
+
 app.post('/send',(req,res)=>{
     
     let usuario = req.body.email
@@ -54,7 +59,7 @@ app.post('/send',(req,res)=>{
 
     // Verificar que todos los campos estan presentes
     if (!usuario || !full_name || !password){
-        return res.status(400).send('Todos los campos son obligatorios')
+        return res.status(400).send('Todos los campos son obligatorios. Por favor vuelva a la pagina principal (/home)')
     }
 
 
@@ -66,11 +71,10 @@ app.post('/send',(req,res)=>{
                 console.log('usuario se registro')
                 req.session.loggedin=true
                 req.session.username=usuario
-                res.sendFile(path.join(__dirname,'/public/send.html'))
             }else{
                 console.log('el usuario no se registro')
             }
-            res.redirect('/home')
+            res.redirect('/send')
         })
     }else {
         res.redirect ('home')
