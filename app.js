@@ -47,40 +47,130 @@ app.get('/home', (req,res)=>{
     res.sendFile(path.join(__dirname,'/public/index.html'))
 })
 
-app.get('/send', (req,res) =>{{
+app.get('/send', (req,res) =>{
     res.sendFile(path.join(__dirname, '/public/send.html'))
-}})
-
-app.post('/send',(req,res)=>{
-    
-    let usuario = req.body.email
-    let full_name = req.body.fullname
-    let password = req.body.password
-
-    // Verificar que todos los campos estan presentes
-    if (!usuario || !full_name || !password){
-        return res.status(400).send('Todos los campos son obligatorios. Por favor vuelva a la pagina principal (/home)')
-    }
-
-
-    // Ingresar un nuevo usuario
-    if (usuario && full_name && password){
-        conection.query('INSERT INTO usuarios (email_phone,full_name,password) VALUES (?,?,?)',[usuario,full_name,password],(error,resultado,fields)=>{
-            if (error) throw error;
-            if (resultado.affectedRows>0){
-                console.log('usuario se registro')
-                req.session.loggedin=true
-                req.session.username=usuario
-            }else{
-                console.log('el usuario no se registro')
-            }
-            res.redirect('/send')
-        })
-    }else {
-        res.redirect ('home')
-        res.end()
-    }
 })
+
+
+app.post('/send', async (req, res) => {
+    try {
+        let usuario = req.body.email;
+        let full_name = req.body.fullname;
+        let password = req.body.password;
+
+        // Verificar que todos los campos estan presentes
+        if (!usuario || !full_name || !password) {
+            return res.status(400).send('Todos los campos son obligatorios. Por favor vuelva a la pagina principal (/home)');
+        }
+
+        // Verificacion de email
+        const emailCount = await getEmailCount(usuario);
+
+        if (emailCount > 0) {
+            return res.status(400).send('El correo electrónico ya está en uso. Por favor, vuelva a la pagina principal y elija otro.');
+        }
+
+        // Ingresar un nuevo usuario
+        if (usuario && full_name && password) {
+            const insertResult = await insertUsuario(usuario, full_name, password);
+
+            if (insertResult.affectedRows > 0) {
+                console.log('usuario se registro');
+                req.session.loggedin = true;
+                req.session.username = usuario;
+            } else {
+                console.log('el usuario no se registro');
+            }
+            res.redirect('/send');
+        } else {
+            res.redirect('home');
+            res.end();
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send('Error interno en el servidor.');
+    }
+});
+
+// Función para obtener el recuento de correos electrónicos duplicados
+function getEmailCount(email) {
+    return new Promise((resolve, reject) => {
+        conection.query('SELECT COUNT(*) AS count FROM usuarios WHERE email_phone = ?', [email], (error, rows) => {
+            if (error) {
+                console.error(error);
+                reject(error);
+            } else {
+                resolve(rows[0].count);
+            }
+        });
+    });
+}
+
+// Función para insertar un nuevo usuario
+function insertUsuario(email, fullName, password) {
+    return new Promise((resolve, reject) => {
+        conection.query('INSERT INTO usuarios (email_phone, full_name, password) VALUES (?, ?, ?)', [email, fullName, password], (error, resultado, fields) => {
+            if (error) {
+                console.error(error);
+                reject(error);
+            } else {
+                resolve(resultado);
+            }
+        });
+    });
+}
+
+// app.post('/send',(req,res)=>{
+    
+//     let usuario = req.body.email
+//     let full_name = req.body.fullname
+//     let password = req.body.password
+
+//     // Verificar que todos los campos estan presentes
+//     if (!usuario || !full_name || !password){
+//         return res.status(400).send('Todos los campos son obligatorios. Por favor vuelva a la pagina principal (/home)')
+//     }
+
+
+
+//     // Verificacion de email 
+// try {
+//     conection.query('SELECT COUNT(*) AS count FROM usuarios WHERE email_phone = ?', [usuario], function(error, rows) {
+//         if (error) {
+//             console.error(error);
+//             return res.status(500).send('Error al consultar la base de datos');
+//         }
+
+//         if (rows[0].count > 0) {
+//             return res.status(400).send('El correo electrónico ya está en uso. Por favor, vuelva a la pagina principal y elija otro.');
+//         }
+//     });
+// } catch (error) {
+//     console.error(error);
+//     return res.status(500).send('Error al procesar la solicitud.');
+// }
+
+
+
+
+//     // Ingresar un nuevo usuario
+//     if (usuario && full_name && password){
+//         conection.query('INSERT INTO usuarios (email_phone,full_name,password) VALUES (?,?,?)',[usuario,full_name,password],(error,resultado,fields)=>{
+//             if (error) throw error;
+//             if (resultado.affectedRows>0){
+//                 console.log('usuario se registro')
+//                 req.session.loggedin=true
+//                 req.session.username=usuario
+//             }else{
+//                 console.log('el usuario no se registro')
+//             }
+//             res.redirect('/send')
+//         })
+//     }else {
+//         res.redirect ('home')
+//         res.end()
+//     }
+// })
 
 app.listen(4000, ()=>{
     console.log('servidor ejecutandose')
