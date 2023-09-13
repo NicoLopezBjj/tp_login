@@ -98,7 +98,6 @@ function getEmailCount(email) {
         conection.query('SELECT COUNT(*) AS count FROM usuarios WHERE email_phone = ?', [email], (error, rows) => {
             if (error) {
                 console.error(error);
-                reject(error);
             } else {
                 resolve(rows[0].count);
             }
@@ -109,10 +108,9 @@ function getEmailCount(email) {
 // Función para insertar un nuevo usuario
 function insertUsuario(email, fullName, password) {
     return new Promise((resolve, reject) => {
-        conection.query('INSERT INTO usuarios (email_phone, full_name, password) VALUES (?, ?, ?)', [email, fullName, password], (error, resultado, fields) => {
+        conection.query('INSERT INTO usuarios (email_phone, full_name, password) VALUES (?, ?, ?)', [email, fullName, password], (error, resultado) => {
             if (error) {
                 console.error(error);
-                reject(error);
             } else {
                 resolve(resultado);
             }
@@ -120,57 +118,7 @@ function insertUsuario(email, fullName, password) {
     });
 }
 
-// app.post('/send',(req,res)=>{
-    
-//     let usuario = req.body.email
-//     let full_name = req.body.fullname
-//     let password = req.body.password
 
-//     // Verificar que todos los campos estan presentes
-//     if (!usuario || !full_name || !password){
-//         return res.status(400).send('Todos los campos son obligatorios. Por favor vuelva a la pagina principal (/home)')
-//     }
-
-
-
-//     // Verificacion de email 
-// try {
-//     conection.query('SELECT COUNT(*) AS count FROM usuarios WHERE email_phone = ?', [usuario], function(error, rows) {
-//         if (error) {
-//             console.error(error);
-//             return res.status(500).send('Error al consultar la base de datos');
-//         }
-
-//         if (rows[0].count > 0) {
-//             return res.status(400).send('El correo electrónico ya está en uso. Por favor, vuelva a la pagina principal y elija otro.');
-//         }
-//     });
-// } catch (error) {
-//     console.error(error);
-//     return res.status(500).send('Error al procesar la solicitud.');
-// }
-
-
-
-
-//     // Ingresar un nuevo usuario
-//     if (usuario && full_name && password){
-//         conection.query('INSERT INTO usuarios (email_phone,full_name,password) VALUES (?,?,?)',[usuario,full_name,password],(error,resultado,fields)=>{
-//             if (error) throw error;
-//             if (resultado.affectedRows>0){
-//                 console.log('usuario se registro')
-//                 req.session.loggedin=true
-//                 req.session.username=usuario
-//             }else{
-//                 console.log('el usuario no se registro')
-//             }
-//             res.redirect('/send')
-//         })
-//     }else {
-//         res.redirect ('home')
-//         res.end()
-//     }
-// })
 
 app.listen(4000, ()=>{
     console.log('servidor ejecutandose')
