@@ -51,7 +51,7 @@ app.get('/send', (req,res) =>{
     res.sendFile(path.join(__dirname, '/public/send.html'))
 })
 
-
+//peticion para insertar usuario en sing up
 app.post('/send', async (req, res) => {
     try {
         let usuario = req.body.email;
@@ -118,7 +118,46 @@ function insertUsuario(email, fullName, password) {
     });
 }
 
+//peticion para usuario ya registrado sing in
+app.post('/sign-in.html', async (req, res) => {
+    try {
+        let usuario = req.body.email;
+        let password = req.body.password;
 
+        // Verificar que ambos campos estén presentes
+        if (!usuario || !password) {
+            return res.status(400).send('Todos los campos son obligatorios. Por favor, vuelva a la pagina principal <a href="index.html">Click aqui para volver.</a>');
+        }
+
+        // Verificar si el usuario y la contraseña coinciden
+        const user = await getUser(usuario, password);
+
+        if (user) {
+            req.session.loggedin = true;
+            req.session.username = usuario;
+            return res.redirect('/send'); 
+        } else {
+            return res.status(401).send('Datos incorrectos. Por favor, inténtelo de nuevo. <a href="sign-in.html">Click aqui para volver a intentar.</a>');
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send('Error interno en el servidor.');
+    }
+});
+
+// Función para obtener un usuario por email y contraseña
+function getUser(email, password) {
+    return new Promise((resolve, reject) => {
+        conection.query('SELECT * FROM usuarios WHERE email_phone = ? AND password = ?', [email, password], (error, rows) => {
+            if (error) {
+                console.error(error);
+                resolve(null);
+            } else {
+                resolve(rows[0]);
+            }
+        });
+    });
+}
 
 app.listen(4000, ()=>{
     console.log('servidor ejecutandose')
