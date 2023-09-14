@@ -10,3 +10,31 @@
     height: 100vh;
 }
 
+.styled-paragraph {
+    position: relative;
+    text-align: center;
+    font-size: 12px;
+    color: gray;
+}
+
+.styled-paragraph::before,
+.styled-paragraph::after {
+    content: "";
+    display: inline-block;
+    vertical-align: middle;
+    width: 30%;
+    height: 0.3px;
+    background-color: gray;
+}
+
+.styled-paragraph::before {
+    margin-right: 1em;
+}
+
+.styled-paragraph::after {
+    margin-left: 1em;
+}
+
+.width{
+    width: 20rem;
+}
