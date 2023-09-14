@@ -1,3 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Merriweather+Sans:wght@400;700&family=Pathway+Extreme:wght@400;700&family=Roboto+Condensed:wght@300&display=swap');
+
+
+body{
+    font-family:  'Roboto Condensed', sans-serif;
+}
+
 .fondoGris{
     background-color: rgb(196, 190, 190);
 }
@@ -37,4 +44,19 @@
 
 .width{
     width: 20rem;
+}
+
+.texto{
+    color: gray;
+    font-size: small;
+}
+
+.bold{
+    font-weight: bold;
+    color: black;
+    font-size: small;
+}
+
+.black{
+    color:black;
 }

@@ -60,7 +60,7 @@ app.post('/send', async (req, res) => {
 
         // Verificar que todos los campos estan presentes
         if (!usuario || !full_name || !password) {
-            return res.status(400).send('Todos los campos son obligatorios. Por favor vuelva a la pagina principal (/home)');
+            return res.status(400).send('Todos los campos son obligatorios. Por favor vuelva a la pagina principal <a href="index.html">Click aqui para volver a la pagina.</a>');
         }
 
         // Verificacion de email
